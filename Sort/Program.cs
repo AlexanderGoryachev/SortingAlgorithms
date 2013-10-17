@@ -3,6 +3,7 @@
 using System;
 using System.Diagnostics;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading;
 
 namespace Sort
@@ -11,15 +12,41 @@ namespace Sort
     {
         private static Random random = new Random();
 
+        private static bool HasNumbersOnly(string value)
+        {
+            return !(Regex.IsMatch(value, @"[^0-9]"));
+        }
+
         static void Main(string[] args)
         {
+            Console.SetWindowSize(100, 70);
             Console.WriteLine("Enter initial parameters");
             Console.WriteLine("Size of array: ");
-            var size = int.Parse(Console.ReadLine());
+            var line = Console.ReadLine();
+
+            var size = 30;
+            if (!String.IsNullOrEmpty(line) & HasNumbersOnly(line))
+                size = int.Parse(line);
+            else
+                Console.WriteLine("30\n");
+            
             Console.WriteLine("Minimum random element in the array: ");
-            var minValue = int.Parse(Console.ReadLine());
+            line = Console.ReadLine();
+
+            var minValue = 1;
+            if (!String.IsNullOrEmpty(line) & HasNumbersOnly(line))
+                minValue = int.Parse(line);
+            else
+                Console.WriteLine("1\n");
+
             Console.WriteLine("Maximum random element in the array: ");
-            var maxValue = int.Parse(Console.ReadLine());
+            line = Console.ReadLine();
+            var maxValue = 60;
+            if (!String.IsNullOrEmpty(line) & HasNumbersOnly(line))
+                maxValue = int.Parse(line);
+            else
+                Console.WriteLine("60\n");
+
             Console.WriteLine("Enter the number of the type of a sorting algorithm:");
             Console.WriteLine("1. Insertion sort");
             Console.WriteLine("2. Gnome sort");
@@ -27,7 +54,8 @@ namespace Sort
             Console.WriteLine("4. Shaker sort");
             Console.WriteLine("5. Heap sort");
             Console.WriteLine("6. Quick sort");
-            var sortType = int.Parse(Console.ReadLine());
+            line = Console.ReadLine();
+            var sortType = !String.IsNullOrEmpty(line) & HasNumbersOnly(line) ? int.Parse(line) : 1;
 
             Console.Clear();
 
@@ -148,11 +176,7 @@ namespace Sort
                     if (a[j] > a[j + 1]) 
                     {
                         Swap(a, j, j + 1);
-                    }
-                    
-                #if (DisplayArray)            
-                    DisplayArrayWithSleep(a, true, 100);
-                #endif
+                    }    
                 }                
             }
         }
@@ -180,9 +204,6 @@ namespace Sort
                     if (a[end - 1] > a[end])
                         Swap(a, end - 1, end);
                     end--;//сдвигаем позицию назад
-
-                    //DisplayArrayWithSleep(a, true, 100);
-
                 }
                 while (beg <= end);// условия усреднения
 
@@ -197,7 +218,10 @@ namespace Sort
             int glass;
             glass = a[i];
             a[i] = a[j];
-            a[j] = glass;
+            a[j] = glass;                
+            #if (DisplayArray)            
+                DisplayArrayWithSleep(a, true, 100);
+            #endif
         }
 
         private static void HeapSort(int[] a)
