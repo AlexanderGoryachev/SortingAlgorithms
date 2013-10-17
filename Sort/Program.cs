@@ -1,4 +1,4 @@
-﻿#define DisplayArray
+﻿#define DisplayArray // comment out this line to see the actual time of the array sorting
 
 using System;
 using System.Diagnostics;
@@ -17,10 +17,15 @@ namespace Sort
             return !(Regex.IsMatch(value, @"[^0-9]"));
         }
 
+        private static bool visualizeProcess = true;
+
         static void Main(string[] args)
         {
-            Console.SetWindowSize(100, 70);
-            Console.WriteLine("Enter initial parameters");
+            if (visualizeProcess)
+                Console.SetWindowSize(100, 70);
+            
+
+            Console.WriteLine("Enter initial parameters\n");
             Console.WriteLine("Size of array: ");
             var line = Console.ReadLine();
 
@@ -28,7 +33,7 @@ namespace Sort
             if (!String.IsNullOrEmpty(line) & HasNumbersOnly(line))
                 size = int.Parse(line);
             else
-                Console.WriteLine("30\n");
+                WriteColoredLine("30\n", ConsoleColor.Green);
             
             Console.WriteLine("Minimum random element in the array: ");
             line = Console.ReadLine();
@@ -37,15 +42,16 @@ namespace Sort
             if (!String.IsNullOrEmpty(line) & HasNumbersOnly(line))
                 minValue = int.Parse(line);
             else
-                Console.WriteLine("1\n");
+                WriteColoredLine("1\n", ConsoleColor.Green);
 
             Console.WriteLine("Maximum random element in the array: ");
             line = Console.ReadLine();
+
             var maxValue = 60;
             if (!String.IsNullOrEmpty(line) & HasNumbersOnly(line))
                 maxValue = int.Parse(line);
             else
-                Console.WriteLine("60\n");
+                WriteColoredLine("60\n", ConsoleColor.Green);
 
             Console.WriteLine("Enter the number of the type of a sorting algorithm:");
             Console.WriteLine("1. Insertion sort");
@@ -55,7 +61,35 @@ namespace Sort
             Console.WriteLine("5. Heap sort");
             Console.WriteLine("6. Quick sort");
             line = Console.ReadLine();
-            var sortType = !String.IsNullOrEmpty(line) & HasNumbersOnly(line) ? int.Parse(line) : 1;
+
+            var sortType = 1;
+            if (!String.IsNullOrEmpty(line) & HasNumbersOnly(line))
+                sortType = int.Parse(line);
+            else
+                WriteColoredLine("1\n", ConsoleColor.Green);
+
+            var beginSorting = false;
+            while (beginSorting == false)
+            {
+                Console.WriteLine("Visualize the process of sorting? (Y/N) ");
+                line = Console.ReadLine();
+
+                if (line == "Y" || line == "y")
+                {
+                    visualizeProcess = true;
+                    beginSorting = true;
+                }
+                else if (line == "N" || line == "n")
+                {
+                    visualizeProcess = false;
+                    beginSorting = true;
+                }
+                else
+                {
+                    WriteColoredLine("Entered value is not valid!", ConsoleColor.Red);
+                    Console.WriteLine("Enter \"Y\" or \"N\" for confirm your choise\n");
+                }
+            }
 
             Console.Clear();
 
@@ -63,14 +97,15 @@ namespace Sort
             int[] oldArray = new int[a.Count()];
             a.CopyTo(oldArray, 0);
 
-            #if (DisplayArray)
+            if (visualizeProcess)
             {
                 WriteArray(a);
-
                 Console.WriteLine("\nPress \"Enter\" to start sorting");
                 Console.ReadLine();
             }
-            #endif
+            else
+                Console.WriteLine("Sort begun...");
+            
 
             var sw = new Stopwatch();
             sw.Start();
@@ -106,7 +141,9 @@ namespace Sort
 
             sw.Stop();
             Console.WriteLine("\nSorting complete");
-            Console.WriteLine("\n" + "Elapsed Milliseconds: " + sw.ElapsedMilliseconds);
+
+            if (!visualizeProcess)
+                Console.WriteLine("\n" + "Elapsed Milliseconds: " + sw.ElapsedMilliseconds);
 
 
             //Console.WriteLine("n# Old New \n");
@@ -142,9 +179,8 @@ namespace Sort
                 }
                 a[j + 1] = temp;
                            
-                #if (DisplayArray)            
-                    DisplayArrayWithSleep(a, true, 100);
-                #endif
+                if (visualizeProcess)            
+                    DisplayArrayWithSleep(a, true, 100);                
             }
         }
 
@@ -161,9 +197,8 @@ namespace Sort
                     a[--i] = tmp;
                 }
                 
-                #if (DisplayArray)            
-                    DisplayArrayWithSleep(a, true, 100);
-                #endif
+                if (visualizeProcess)            
+                    DisplayArrayWithSleep(a, true, 100);                
             }
         }
 
@@ -218,10 +253,10 @@ namespace Sort
             int glass;
             glass = a[i];
             a[i] = a[j];
-            a[j] = glass;                
-            #if (DisplayArray)            
-                DisplayArrayWithSleep(a, true, 100);
-            #endif
+            a[j] = glass;            
+    
+            if (visualizeProcess)
+                DisplayArrayWithSleep(a, true, 100);            
         }
 
         private static void HeapSort(int[] a)
@@ -242,9 +277,8 @@ namespace Sort
                 siftDown(a, 0, i - 1);
             }
             
-                #if (DisplayArray)            
+                if (visualizeProcess)            
                     DisplayArrayWithSleep(a, true, 100);
-                #endif
         }
 
         private static void siftDown(int[] a, int i, int j)
@@ -274,9 +308,8 @@ namespace Sort
                     done = true;
                 }
                 
-                #if (DisplayArray)            
-                    DisplayArrayWithSleep(a, true, 100);
-                #endif
+                if (visualizeProcess)            
+                    DisplayArrayWithSleep(a, true, 100);                
             }
         }
 
@@ -289,9 +322,8 @@ namespace Sort
                 QuickSort(a, q + 1, j);
             }
             
-                #if (DisplayArray)            
-                    DisplayArrayWithSleep(a, true, 100);
-                #endif
+                if (visualizeProcess)            
+                    DisplayArrayWithSleep(a, true, 100);                
         }
 
         private static int Partition(int[] a, int p, int q)
@@ -323,9 +355,8 @@ namespace Sort
                     return j;
                 }
                 
-                #if (DisplayArray)            
-                    DisplayArrayWithSleep(a, true, 100);
-                #endif
+                if (visualizeProcess)            
+                    DisplayArrayWithSleep(a, true, 100);                
             }
         }
 
@@ -347,5 +378,12 @@ namespace Sort
             }
         }
 
+        private static void WriteColoredLine(string s, ConsoleColor newColor)
+        {
+            var oldColor = Console.ForegroundColor;
+            Console.ForegroundColor = newColor;
+            Console.WriteLine(s);
+            Console.ForegroundColor = oldColor;
+        }
     }
 }
