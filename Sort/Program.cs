@@ -177,29 +177,38 @@ namespace Sort
                 {
                     a[j + 1] = a[j];
                     j = j - 1;
+
+                    if (visualizeProcess)
+                        DisplayArrayWithSleep(a, true, 100, j+1, i);
+                        //DisplayArrayWithSleep(a, true, 100);
                 }
                 a[j + 1] = temp;
                            
-                if (visualizeProcess)            
-                    DisplayArrayWithSleep(a, true, 100);                
             }
         }
 
         private static void GnomeSort(int[] a)
         {
+            var maxi = 0; // colored column
             int i = 0;
             while (i < a.Length)
             {
-                if (i == 0 || a[i - 1] <= a[i]) i++;
+                if (i == 0 || a[i - 1] <= a[i])
+                {
+                    i++;
+
+                    if (i > maxi) // colored column
+                        maxi = i; // colored column
+                }
                 else
                 {
                     int tmp = a[i];
                     a[i] = a[i - 1];
                     a[--i] = tmp;
-                }
-                
-                if (visualizeProcess)            
-                    DisplayArrayWithSleep(a, true, 100);                
+                }                    
+
+                if (visualizeProcess)
+                    DisplayArrayWithSleep(a, true, 100, i, maxi); 
             }
         }
 
@@ -212,6 +221,9 @@ namespace Sort
                     if (a[j] > a[j + 1]) 
                     {
                         Swap(a, j, j + 1);
+
+                        if (visualizeProcess)
+                            DisplayArrayWithSleep(a, true, 100, j + 1, a.Length - 1 - i); 
                     }    
                 }                
             }
@@ -230,16 +242,18 @@ namespace Sort
                 do
                 {
                     count += 2;
+                    if (visualizeProcess)
+                        DisplayArrayWithSleep(a, true, 100, end, beg);
                     /* идем спереди */
                     if (a[beg] > a[beg + 1])
                         Swap(a, beg, beg + 1);
                     beg++;//сдвигаем позицию вперед
 
-
                     /* идем сзади */
                     if (a[end - 1] > a[end])
                         Swap(a, end - 1, end);
                     end--;//сдвигаем позицию назад
+                    
                 }
                 while (beg <= end);// условия усреднения
 
@@ -254,10 +268,10 @@ namespace Sort
             int glass;
             glass = a[i];
             a[i] = a[j];
-            a[j] = glass;            
-    
-            if (visualizeProcess)
-                DisplayArrayWithSleep(a, true, 100);            
+            a[j] = glass;
+
+            //if (visualizeProcess)
+            //    DisplayArrayWithSleep(a, true, 100); 
         }
 
         private static void HeapSort(int[] a)
@@ -323,8 +337,8 @@ namespace Sort
                 QuickSort(a, q + 1, j);
             }
             
-                if (visualizeProcess)            
-                    DisplayArrayWithSleep(a, true, 100);                
+            if (visualizeProcess)            
+                DisplayArrayWithSleep(a, true, 100);                
         }
 
         private static int Partition(int[] a, int p, int q)
@@ -361,11 +375,20 @@ namespace Sort
             }
         }
 
+        #region UI methods
         private static void DisplayArrayWithSleep(int[] a, bool clearScreen, int sleepTime)
         {
             if (clearScreen)
                 Console.Clear();
             WriteArray(a);
+            Thread.Sleep(sleepTime);
+        }
+
+        private static void DisplayArrayWithSleep(int[] a, bool clearScreen, int sleepTime, int y, int r)
+        {
+            if (clearScreen)
+                Console.Clear();
+            WriteArray(a, y, r);
             Thread.Sleep(sleepTime);
         }
 
@@ -379,6 +402,21 @@ namespace Sort
             }
         }
 
+        private static void WriteArray(int[] a, int y, int r)
+        {
+            char pad = '-';
+            for (int i = 0; i < a.Length; i++)
+            {
+                var str = string.Empty;
+                if (i == r)
+                    WriteColoredLine(str.PadRight(a[i], pad), ConsoleColor.Red);
+                else if (i == y)
+                    WriteColoredLine(str.PadRight(a[i], pad), ConsoleColor.Yellow);                 
+                else
+                    Console.WriteLine(str.PadRight(a[i], pad));
+            }
+        }
+
         private static void WriteColoredLine(string s, ConsoleColor newColor)
         {
             var oldColor = Console.ForegroundColor;
@@ -386,5 +424,6 @@ namespace Sort
             Console.WriteLine(s);
             Console.ForegroundColor = oldColor;
         }
+        #endregion
     }
 }
