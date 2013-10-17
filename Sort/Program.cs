@@ -17,14 +17,10 @@ namespace Sort
             return !(Regex.IsMatch(value, @"[^0-9]"));
         }
 
-        private static bool visualizeProcess = true;
+        private static bool visualizeProcess;
 
         static void Main(string[] args)
-        {
-            if (visualizeProcess)
-                Console.SetWindowSize(100, 70);
-            
-
+        {      
             Console.WriteLine("Enter initial parameters\n");
             Console.WriteLine("Size of array: ");
             var line = Console.ReadLine();
@@ -99,6 +95,7 @@ namespace Sort
 
             if (visualizeProcess)
             {
+                Console.SetWindowSize(100, 70);
                 WriteArray(a);
                 Console.WriteLine("\nPress \"Enter\" to start sorting");
                 Console.ReadLine();
@@ -140,10 +137,14 @@ namespace Sort
             }            
 
             sw.Stop();
-            Console.WriteLine("\nSorting complete");
+            WriteColoredLine("\nSorting complete", ConsoleColor.Green);
 
             if (!visualizeProcess)
-                Console.WriteLine("\n" + "Elapsed Milliseconds: " + sw.ElapsedMilliseconds);
+            {
+                Console.Write("\n" + "Elapsed Milliseconds: ");
+                WriteColoredLine(sw.ElapsedMilliseconds.ToString(), ConsoleColor.Green);
+            }
+                
 
 
             //Console.WriteLine("n# Old New \n");
